@@ -29,7 +29,20 @@ namespace Paxstore.OpenApi
         private const string PUSH_TERMINAL_ACTION_URL = "/v1/3rdsys/terminals/{terminalId}/operation";
         private const string COPY_TERMINAL_URL = "/v1/3rdsys/terminals/copy";
         private const string GET_TERMINAL_NETWORK_URL = "/v1/3rdsys/terminals/network";
+        private const string GET_TERMINAL_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}";
+        private const string ACTIVE_TERMINAL_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}/active";
+        private const string DISABLE_TERMINAL_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}/disable";
+        private const string DELETE_TERMINAL_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}";
+        private const string UPDATE_TERMINAL_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}";
+        private const string MOVE_TERMINAL_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}/move";
+        private const string GET_TERMINAL_REMOTE_CONFIG_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}/config";
+        private const string UPDATE_TERMINAL_REMOTE_CONFIG_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}/config";
+        private const string PUSH_TERMINAL_ACTION_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}/operation";
+        private const string COPY_TERMINAL_BY_SN_URL = "/v1/3rdsys/terminals/snCopy";
+        private const string GET_TERMINAL_SYSTEM_USAGE_URL = "/v1/3rdsys/terminals/{terminalId}/systemUsage";
+        private const string GET_TERMINAL_SYSTEM_USAGE_BY_SN_URL = "/v1/3rdsys/terminals/sn/{serialNo}/systemUsage";
 
+        private const string URL_SEGMENT_SERIAL_NO = "serialNo";
         private const string URL_SEGMENT_TERMINAL_ID = "terminalId";
 
         public TerminalApi(string baseUrl, string apiKey, string apiSecret, TimeZoneInfo timeZoneInfo = null, int timeout = 5000, IWebProxy proxy = null)
@@ -346,6 +359,233 @@ namespace Paxstore.OpenApi
         }
 
 
+
+        public Result<TerminalSystemUsage> GetSystemUsage(long terminalId)
+        {
+            IList<string> validationErrs = ValidateId(terminalId, "terminalIdInvalid");
+            if (validationErrs.Count > 0)
+            {
+                return new Result<TerminalSystemUsage>(validationErrs);
+            }
+            RestRequest request = new RestRequest(GET_TERMINAL_SYSTEM_USAGE_URL, Method.Get);
+            request.AddUrlSegment(URL_SEGMENT_TERMINAL_ID, terminalId);
+            var responseContent = Execute(request);
+            TerminalSystemUsageResponse response = JsonConvert.DeserializeObject<TerminalSystemUsageResponse>(responseContent);
+            Result<TerminalSystemUsage> result = new Result<TerminalSystemUsage>(response);
+            return result;
+        }
+
+        public Result<TerminalSystemUsage> GetSystemUsageBySn(string serialNo)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+                return new Result<TerminalSystemUsage>(validationErrs);
+            }
+            RestRequest request = new RestRequest(GET_TERMINAL_SYSTEM_USAGE_BY_SN_URL, Method.Get);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            var responseContent = Execute(request);
+            TerminalSystemUsageResponse response = JsonConvert.DeserializeObject<TerminalSystemUsageResponse>(responseContent);
+            Result<TerminalSystemUsage> result = new Result<TerminalSystemUsage>(response);
+            return result;
+        }
+
+        public Result<Terminal> GetTerminalBySn(string serialNo)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+                return new Result<Terminal>(validationErrs);
+            }
+            RestRequest request = new RestRequest(GET_TERMINAL_BY_SN_URL, Method.Get);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            var responseContent = Execute(request);
+            TerminalResponse terminalResponse = JsonConvert.DeserializeObject<TerminalResponse>(responseContent);
+            Result<Terminal> result = new Result<Terminal>(terminalResponse);
+            return result;
+        }
+
+        public Result<Terminal> UpdateTerminalBySn(string serialNo, TerminalUpdateRequest terminalUpdateRequest)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+            }
+            if (terminalUpdateRequest == null)
+            {
+                validationErrs.Add(GetMsgByKey("terminalUpdateRequestIsNull"));
+            }
+            if (validationErrs.Count > 0)
+            {
+                return new Result<Terminal>(validationErrs);
+            }
+            RestRequest request = new RestRequest(UPDATE_TERMINAL_BY_SN_URL, Method.Put);
+            var terminalJson = JsonConvert.SerializeObject(terminalUpdateRequest);
+            request.AddParameter(Constants.CONTENT_TYPE_JSON, terminalJson, ParameterType.RequestBody);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            var responseContent = Execute(request);
+            TerminalResponse terminalResponse = JsonConvert.DeserializeObject<TerminalResponse>(responseContent);
+            Result<Terminal> result = new Result<Terminal>(terminalResponse);
+            return result;
+        }
+
+        public Result<string> ActivateTerminalBySn(string serialNo)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+                return new Result<string>(validationErrs);
+            }
+            RestRequest request = new RestRequest(ACTIVE_TERMINAL_BY_SN_URL, Method.Put);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            var responseContent = Execute(request);
+            EmptyResponse emptyResponse = JsonConvert.DeserializeObject<EmptyResponse>(responseContent);
+            Result<string> result = new Result<string>(emptyResponse);
+            return result;
+        }
+
+        public Result<string> DisableTerminalBySn(string serialNo)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+                return new Result<string>(validationErrs);
+            }
+            RestRequest request = new RestRequest(DISABLE_TERMINAL_BY_SN_URL, Method.Put);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            var responseContent = Execute(request);
+            EmptyResponse emptyResponse = JsonConvert.DeserializeObject<EmptyResponse>(responseContent);
+            Result<string> result = new Result<string>(emptyResponse);
+            return result;
+        }
+
+        public Result<string> DeleteTerminalBySn(string serialNo)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+                return new Result<string>(validationErrs);
+            }
+            RestRequest request = new RestRequest(DELETE_TERMINAL_BY_SN_URL, Method.Delete);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            var responseContent = Execute(request);
+            EmptyResponse emptyResponse = JsonConvert.DeserializeObject<EmptyResponse>(responseContent);
+            Result<string> result = new Result<string>(emptyResponse);
+            return result;
+        }
+
+        public Result<string> MoveTerminalBySn(string serialNo, string resellerName, string merchantName)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+            }
+            if (string.IsNullOrEmpty(resellerName))
+            {
+                validationErrs.Add(GetMsgByKey("parameterResellerNameIsNull"));
+            }
+            if (string.IsNullOrEmpty(merchantName))
+            {
+                validationErrs.Add(GetMsgByKey("parameterMerchantNameIsNull"));
+            }
+            if (validationErrs.Count > 0)
+            {
+                return new Result<string>(validationErrs);
+            }
+            RestRequest request = new RestRequest(MOVE_TERMINAL_BY_SN_URL, Method.Put);
+            TerminalMoveRequest terminalMoveRequest = new TerminalMoveRequest();
+            terminalMoveRequest.ResellerName = resellerName;
+            terminalMoveRequest.MerchantName = merchantName;
+            var requestJson = JsonConvert.SerializeObject(terminalMoveRequest);
+            request.AddParameter(Constants.CONTENT_TYPE_JSON, requestJson, ParameterType.RequestBody);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            string responseContent = Execute(request);
+            EmptyResponse emptyResponse = JsonConvert.DeserializeObject<EmptyResponse>(responseContent);
+            Result<string> result = new Result<string>(emptyResponse);
+            return result;
+        }
+
+        public Result<TerminalConfig> GetTerminalConfigBySn(string serialNo)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+                return new Result<TerminalConfig>(validationErrs);
+            }
+            RestRequest request = new RestRequest(GET_TERMINAL_REMOTE_CONFIG_BY_SN_URL, Method.Get);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            var responseContent = Execute(request);
+            TerminalConfigResponse terminalConfigResponse = JsonConvert.DeserializeObject<TerminalConfigResponse>(responseContent);
+            Result<TerminalConfig> result = new Result<TerminalConfig>(terminalConfigResponse);
+            return result;
+        }
+
+        public Result<string> UpdateTerminalConfigBySn(string serialNo, TerminalConfigUpdateRequest terminalConfigUpdateRequest)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+            }
+            if (terminalConfigUpdateRequest == null)
+            {
+                validationErrs.Add(GetMsgByKey("parameterTerminalConfigUpdateRequestIsNull"));
+            }
+            if (validationErrs.Count > 0)
+            {
+                return new Result<string>(validationErrs);
+            }
+            RestRequest request = new RestRequest(UPDATE_TERMINAL_REMOTE_CONFIG_BY_SN_URL, Method.Put);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            var requestJson = JsonConvert.SerializeObject(terminalConfigUpdateRequest);
+            request.AddParameter(Constants.CONTENT_TYPE_JSON, requestJson, ParameterType.RequestBody);
+            string responseContent = Execute(request);
+            EmptyResponse emptyResponse = JsonConvert.DeserializeObject<EmptyResponse>(responseContent);
+            Result<string> result = new Result<string>(emptyResponse);
+            return result;
+        }
+
+        public Result<string> PushCmdToTerminalBySn(string serialNo, TerminalPushCmd command)
+        {
+            List<string> validationErrs = new List<string>();
+            if (string.IsNullOrEmpty(serialNo))
+            {
+                validationErrs.Add(GetMsgByKey("parameterSnCannotBeEmpty"));
+                return new Result<string>(validationErrs);
+            }
+            RestRequest request = new RestRequest(PUSH_TERMINAL_ACTION_BY_SN_URL, Method.Post);
+            request.AddUrlSegment(URL_SEGMENT_SERIAL_NO, serialNo);
+            request.AddParameter("command", ExtEnumHelper.GetEnumValue(command));
+            string responseContent = Execute(request);
+            EmptyResponse emptyResponse = JsonConvert.DeserializeObject<EmptyResponse>(responseContent);
+            Result<string> result = new Result<string>(emptyResponse);
+            return result;
+        }
+
+        public Result<Terminal> CopyTerminalBySn(TerminalSnCopyRequest terminalSnCopyRequest)
+        {
+            List<string> validationErrs = new List<string>();
+            if (terminalSnCopyRequest == null)
+            {
+                validationErrs.Add(GetMsgByKey("terminalCopyRequestNull"));
+                return new Result<Terminal>(validationErrs);
+            }
+            RestRequest request = new RestRequest(COPY_TERMINAL_BY_SN_URL, Method.Post);
+            var requestJson = JsonConvert.SerializeObject(terminalSnCopyRequest);
+            request.AddParameter(Constants.CONTENT_TYPE_JSON, requestJson, ParameterType.RequestBody);
+            var responseContent = Execute(request);
+            TerminalResponse terminalResponse = JsonConvert.DeserializeObject<TerminalResponse>(responseContent);
+            Result<Terminal> result = new Result<Terminal>(terminalResponse);
+            return result;
+        }
 
         string GetStatusValue(TerminalStatus status)
         {
