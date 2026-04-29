@@ -28,7 +28,7 @@ This API allows third party system to get terminal variable by tid , serialNo , 
 **API**
 
 ```
-public Result<TerminalParameterVariable> GetTerminalVariable(int pageNo, int pageSize, VariableSearchOrderBy orderBy, string tid, string serialNo, string packageName, string key, Nullable<VariableSource> source)
+public Result<TerminalParameterVariable> GetTerminalVariable(int pageNo, int pageSize, Nullable<VariableSearchOrderBy> orderBy, string tid, string serialNo, string packageName, string key, Nullable<VariableSource> source)
 ```
 
 **Input parameter(s) description**  

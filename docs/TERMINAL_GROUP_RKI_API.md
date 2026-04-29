@@ -225,7 +225,7 @@ Push rki to group API allow the third party system push a Rki to group.
 **API**
 
 ```
-Result<TerminalGroupRkiTask> PushRkiKey2Group(CreateTerminalGroupRkiTaskRequest createTerminalGroupRkiTaskRequest)
+public Result<TerminalGroupRkiTask> PushRkiKey2Group(CreateTerminalGroupRkiTaskRequest createTerminalGroupRkiTaskRequest)
 ```
 
 **Input parameter(s) description**  

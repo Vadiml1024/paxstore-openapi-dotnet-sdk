@@ -30,7 +30,7 @@ Get terminal apk parameter(s) by templateName, packageName and versionName.
 **API**
 
 ```
-public Result<TerminalParameterVariable> GetTerminalVariable(int pageNo, int pageSize, Nullable<VariableSearchOrderBy> orderBy, string tid, string serialNo, string packageName, string key, Nullable<VariableSource> source)
+public Result<ApkParameter> GetTerminalApkParameter(int pageNo, int pageSize, Nullable<TerminalApkParamSearchOrderBy> orderBy, string templateName, string packageName, string versionName)
 ```
 
 **Input parameter(s) description**  

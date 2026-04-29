@@ -783,7 +783,7 @@ Result<string> result = api.DeleteReseller(51739L);
 This API is used to update email of the active resellers
 
 ```
-public Result<string> replaceResellerEmail(long resellerId, string email)
+public Result<string> ReplaceResellerEmail(long resellerId, string email)
 ```
 
 **Input parameter(s) description**
@@ -797,7 +797,7 @@ public Result<string> replaceResellerEmail(long resellerId, string email)
 
 ```
 ResellerApi api = new ResellerApi (API_BASE_URL, API_KEY, API_SECRET);
-Result<string> result = API.replaceResellerEmail(1000000267, "zhangsan@pax.com");
+Result<string> result = API.ReplaceResellerEmail(1000000267, "zhangsan@pax.com");
 ```
 
 **Client side validation failed sample result(JSON formatted)**
@@ -855,3 +855,76 @@ Result<string> result = API.replaceResellerEmail(1000000267, "zhangsan@pax.com")
 |1105|Email is invalid|Email address is not valid|
 |1933|The user email not update.|The inputted email address is same as the original email|
 
+
+### Search reseller RKI key list
+
+This API allows the thirdparty system to search the RKI key templates bound to a reseller by page.
+
+**API**
+
+```
+public Result<ResellerRkiKeyInfo> SearchResellerRkiKeyList(long resellerId, int pageNo, int pageSize, string rkiKey)
+```
+
+**Input parameter(s) description**
+
+|Parameter Name|Type|Nullable|Description|
+|:--|:--|:--|:--|
+|resellerId|long|false|The reseller's id.|
+|pageNo|int|false|page number, value must >=1|
+|pageSize|int|false|the record number per page, range is 1 to 100|
+|rkiKey|string|true|Search filter by RKI key name|
+
+**Sample codes**
+
+```
+ResellerApi api = new ResellerApi(API_BASE_URL, API_KEY, API_SECRET);
+Result<ResellerRkiKeyInfo> result = api.SearchResellerRkiKeyList(1000000267, 1, 10, null);
+```
+
+**Client side validation failed sample result(JSON formatted)**
+
+```
+{
+	"BusinessCode": -1,
+	"Message": null,
+	"ValidationErrors": ["pageNo:must be greater than or equal to 1"],
+	"Data": null,
+	"PageInfo": null
+}
+```
+
+**Successful sample result(JSON formatted)**
+
+```
+{
+	"BusinessCode": 0,
+	"PageInfo": {
+		"PageNo": 1,
+		"Limit": 10,
+		"TotalCount": 1,
+		"HasNext": false,
+		"DataSet": [{
+			"KeyId": "TEST_RKI_KEY"
+		}]
+	}
+}
+```
+
+The type in dataSet is ResellerRkiKeyInfo. And the structure like below.
+
+|Name|Type|Description|
+|:---|:---|:---|
+|KeyId|string|the RKI key id|
+
+**Possible client validation errors**
+
+> <font color=red>pageNo:must be greater than or equal to 1</font>
+> <font color=red>pageSize:must be greater than or equal to 1</font>
+> <font color=red>pageSize:must be less than or equal to 100</font>
+
+**Possible business codes**
+
+|Business Code|Message|Description|
+|:--|:--|:--|
+|1759|Reseller doesn't exist|The input reseller id not correct.|

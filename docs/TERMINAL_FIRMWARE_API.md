@@ -28,7 +28,8 @@ This API allows the thirdparty system to push a firmware to a terminal
 **API**
 
 ```
-public Result<string> PushFirmware2TerminalByTidAndFirmwareName(string tid, string firmwareName)
+public Result<PushFirmwareTaskInfo> PushFirmware2TerminalByTidAndFirmwareName(string tid, string firmwareName)
+public Result<PushFirmwareTaskInfo> PushFirmware2TerminalByTidAndFirmwareName(string tid, string firmwareName, bool wifeOnly, Nullable<DateTime> effectiveTime, Nullable<DateTime> expiredTime)
 ```
 
 **Input parameter(s) description**  
@@ -38,8 +39,9 @@ public Result<string> PushFirmware2TerminalByTidAndFirmwareName(string tid, stri
 |:---|:---|:---|:---|
 |tid|string|false|The TID of terminal|
 |firmwareName|string|false|The firmware name|
-
-
+|wifeOnly|bool|false|Whether to push only via WiFi|
+|effectiveTime|Nullable\<DateTime\>|true|The time when to start the push task|
+|expiredTime|Nullable\<DateTime\>|true|The time when to stop the push task|
 
 
 **Sample codes**
@@ -71,7 +73,15 @@ terminalFirmwareApi.PushFirmware2TerminalByTidAndFirmwareName("ABC09098989", "A9
 
 ```
 {
-	"BusinessCode": 0
+	"BusinessCode": 0,
+	"Data": {
+		"ID": 17850,
+		"FmName": "A920_PayDroid_4.4.2_Capricorn_V01.1.10_20171226_OTA",
+		"TerminalSN": "ABC09098989",
+		"Status": "A",
+		"ActionStatus": 2,
+		"ErrorCode": 0
+	}
 }
 ```
 
@@ -106,7 +116,8 @@ The function of this API is same as above one
 **API**
 
 ```
-public Result<string> PushFirmware2TerminalBySnAndFirmwareName(string serialNo, string firmwareName)
+public Result<PushFirmwareTaskInfo> PushFirmware2TerminalBySnAndFirmwareName(string serialNo, string firmwareName)
+public Result<PushFirmwareTaskInfo> PushFirmware2TerminalBySnAndFirmwareName(string serialNo, string firmwareName, bool wifeOnly, Nullable<DateTime> effectiveTime, Nullable<DateTime> expiredTime)
 ```
 
 **Input parameter(s) description**  
@@ -116,6 +127,9 @@ public Result<string> PushFirmware2TerminalBySnAndFirmwareName(string serialNo, 
 |:---|:---|:---|:---|
 |serialNo|string|false|The serial number of terminal|
 |firmwareName|string|false|The firmware name|
+|wifeOnly|bool|false|Whether to push only via WiFi|
+|effectiveTime|Nullable\<DateTime\>|true|The time when to start the push task|
+|expiredTime|Nullable\<DateTime\>|true|The time when to stop the push task|
 
 
 
@@ -216,7 +230,7 @@ public Result<PushFirmwareTaskInfo> SearchPushFirmwareTasks(int pageNo, int page
 |terminalTid|string|false|search filter by terminal tid|
 |fmName|string|true|search filter by firmware name|
 |status|PushStatus|true|the push status<br/> the value can be PushStatus.Active, PushStatus.Suspend, PushStatus.All|
-|string|serialNo|true|search filter by terminal serial number|
+|serialNo|string|true|search filter by terminal serial number|
 
 
 
@@ -368,7 +382,7 @@ This API allows the third Party system disable an exist firmware push by TID of 
 **API**
 
 ```
-public Result<string> DisablePushFirmwareTaskBySnAndFirmwareName(string serialNo, string firmwareName)
+public Result<string> DisablePushFirmwareTaskByTidAndFirmwareName(string tid, string firmwareName)
 ```
 
 **Input parameter(s) description**  
@@ -376,7 +390,7 @@ public Result<string> DisablePushFirmwareTaskBySnAndFirmwareName(string serialNo
 
 |Parameter Name|Type|Nullable|Description|
 |:---|:---|:---|:---|
-|serialNo|string|false|The serial number of terminal|
+|tid|string|false|The TID of terminal|
 |firmwareName|string|false|The name of firmware|
 
 
