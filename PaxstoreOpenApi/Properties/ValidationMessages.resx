@@ -327,4 +327,19 @@
   <data name="terminalCopyRequestNull" xml:space="preserve">
     <value>Parameter terminalCopyRequest cannot be null!</value>
   </data>
+  <data name="parameterFactoryModelIdInvalid" xml:space="preserve">
+    <value>Parameter factoryModelId cannot be null and cannot be less than 1!</value>
+  </data>
+  <data name="parameterTerminalGeoFenceWhiteListUpdateRequestIsNull" xml:space="preserve">
+    <value>Parameter terminalGeoFenceWhiteListUpdateRequest is mandatory!</value>
+  </data>
+  <data name="parameterEmmAppIdInvalid" xml:space="preserve">
+    <value>Parameter emmAppId cannot be null and cannot be less than 1!</value>
+  </data>
+  <data name="parameterEmmDeviceIdInvalid" xml:space="preserve">
+    <value>Parameter emmDeviceId cannot be null and cannot be less than 1!</value>
+  </data>
+  <data name="parameterEmmPolicyIdInvalid" xml:space="preserve">
+    <value>Parameter emmPolicyId cannot be null and cannot be less than 1!</value>
+  </data>
 </root>
